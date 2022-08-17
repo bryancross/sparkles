@@ -1,4 +1,4 @@
-# ✨ Sparkles ✨
+asdfasdfasdf# ✨ Sparkles ✨
 
 Sparkles is a simple little Slack application for recognizing your teammates and friends in the form of ~~meaningless internet points~~ sparkles. When installed to a Slack workspace, a `/sparkle` slash command is added and you can get started immediately!
 sdf
