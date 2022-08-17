@@ -1,0 +1,53 @@
+<div class="px-4 my-5 text-center">
+  <h1 class="display-5 fw-bold">
+    <%= image_tag "sparkles.png", size: 75, class: "mx-auto mb-3", alt: "sparkles" %>
+    <%= image_tag @user.image_url, size: 75, class: "rounded mb-3", alt: @user.name %>
+    <%= @user.name %>'s Sparkles
+    <%= image_tag "sparkles.png", size: 75, class: "mx-auto mb-3", alt: "sparkles" %>
+  </h1>
+
+  <div class="col-lg-6 mx-auto">
+    <% if @sparkles.empty? %>
+      <p class="lead mb-4">
+        Oops, looks like nobody has given <%= @user.name %> any sparkles. Maybe you can be the first?
+      </p>
+    <% else %>
+      <ul class="list-group">
+        <% @sparkles.each do |sparkle| %>
+          <li class="p-2 list-group-item list-group-item-action">
+            <div class="d-flex w-100 align-items-center justify-content-between">
+              <h5 class="mb-1">
+                <%= image_tag(sparkle.sparkler.image_url, size: 36, class: "rounded me-1", alt: sparkle.sparkler.name) %>
+                Sparkled by
+                <%= link_to user_stats_path(current_team.slack_id, sparkle.sparkler.slack_id), class: "username" do %>
+                  <%= "@#{sparkle.sparkler.username.presence || sparkle.sparkler.name}" %>
+                <% end %>
+                <small class="text-muted">
+                  in
+                  <% if sparkle.visible_to?(current_user) %>
+                    #<%= sparkle.channel.name %>
+                  <% else %>
+                    &lt;&#128274; a secret place&gt;
+                  <% end %>
+                </small>
+              </h5>
+              <%= link_to_if (sparkle.visible_to?(current_user) && sparkle.permalink.present?), "#{time_ago_in_words(sparkle.created_at)} ago", sparkle.permalink, {class: "btn btn-xs btn-secondary fw-bold", target: :_blank, rel: "nofollow"} do %>
+                <button class="btn btn-xs btn-secondary fw-bold" disabled><%= time_ago_in_words(sparkle.created_at) %> ago</span>
+              <% end %>
+            </div>
+
+            <% if sparkle.reason.present? && sparkle.visible_to?(current_user) %>
+              <p class="reason mb-0"><%= @processor.call(sparkle.reason)[:output].to_s.html_safe %></p>
+            <% end %>
+          </li>
+        <% end %>
+      </ul>
+    <% end %>
+  </div>
+
+  <%= paginate @sparkles %>
+
+  <p class="lead m-4">
+    Head back to <%= link_to "your team's #{leaderboard_enabled? ? "leaderboard" : "directory"}", team_stats_path(current_team.slack_id) %>!
+  </p>
+</div>
